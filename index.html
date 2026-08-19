@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SwissHilfe AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#171a21}.wrap{max-width:760px;margin:auto;padding:28px 20px 50px}header{margin-bottom:26px}.brand{font-size:32px;font-weight:800}.sub{color:#667085;margin-top:7px}.card{background:#fff;border:1px solid #e2e6ee;border-radius:24px;padding:28px;margin:20px 0;box-shadow:0 5px 18px #0000000b}.icon{font-size:38px}.card h2{margin:10px 0 6px;font-size:25px}.muted{color:#737b8c;font-size:18px}.ask h2{font-size:28px}textarea{width:100%;min-height:160px;border:1px solid #cdd3dd;border-radius:20px;padding:20px;font-size:20px;resize:vertical}button{width:100%;margin-top:20px;border:0;border-radius:18px;padding:20px;background:#e3131b;color:#fff;font-size:22px;font-weight:800}.answer{display:none;margin-top:20px;padding:20px;background:#f4f5f7;border-radius:18px;font-size:18px;line-height:1.55}.answer.show{display:block}footer{text-align:center;color:#8991a1;margin-top:34px;line-height:1.4}
+</style>
+</head>
+<body><div class="wrap">
+<header><div class="brand">SwissHilfe AI</div><div class="sub">Ndihmë e thjeshtë për jetën në Zvicër</div></header>
+<section class="card"><div class="icon">📄</div><h2>Letra & Formularë</h2><div class="muted">Ndihmë për email dhe dokumente</div></section>
+<section class="card"><div class="icon">🇦🇱 🇩🇪</div><h2>Shqip – Gjermanisht</h2><div class="muted">Shpjegim dhe përkthim i thjeshtë</div></section>
+<section class="card ask"><h2>Pyet SwissHilfe</h2><textarea id="q" placeholder="Shkruaj pyetjen tënde..."></textarea><button id="go">Vazhdo</button><div id="a" class="answer"></div></section>
+<footer>Versioni i parë • Informacion orientues, jo këshillë juridike ose mjekësore profesionale.</footer>
+</div>
+<script>
+const q=document.getElementById('q'),a=document.getElementById('a'),go=document.getElementById('go');
+go.onclick=async()=>{const text=q.value.trim();if(!text)return;go.disabled=true;go.textContent='Duke menduar…';a.className='answer show';a.textContent='Po përgatis përgjigjen…';try{const r=await fetch('/api/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:text})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Gabim');a.textContent=d.answer||'Nuk mora përgjigje.'}catch(e){a.textContent='Pjesa AI duhet të lidhet me shërbimin e serverit. Faqja bazë po funksionon.'}finally{go.disabled=false;go.textContent='Vazhdo'}};
+</script></body></html>

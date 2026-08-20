@@ -1,20 +1,603 @@
 <!doctype html>
 <html lang="sq">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SwissHilfe AI</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#171a21}.wrap{max-width:760px;margin:auto;padding:28px 20px 50px}header{margin-bottom:26px}.brand{font-size:32px;font-weight:800}.sub{color:#667085;margin-top:7px}.card{background:#fff;border:1px solid #e2e6ee;border-radius:24px;padding:28px;margin:20px 0;box-shadow:0 5px 18px #0000000b}.icon{font-size:38px}.card h2{margin:10px 0 6px;font-size:25px}.muted{color:#737b8c;font-size:18px}.ask h2{font-size:28px}textarea{width:100%;min-height:160px;border:1px solid #cdd3dd;border-radius:20px;padding:20px;font-size:20px;resize:vertical}button{width:100%;margin-top:20px;border:0;border-radius:18px;padding:20px;background:#e3131b;color:#fff;font-size:22px;font-weight:800}.answer{display:none;margin-top:20px;padding:20px;background:#f4f5f7;border-radius:18px;font-size:18px;line-height:1.55}.answer.show{display:block}footer{text-align:center;color:#8991a1;margin-top:34px;line-height:1.4}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>SwissHilfe AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #17202a;
+    }
+
+    .app {
+      max-width: 760px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    header {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin: 10px 0 20px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      background: #d71920;
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+    }
+
+    header p {
+      margin: 4px 0;
+      color: #667085;
+    }
+
+    .language {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .language button {
+      border: 1px solid #d8dee8;
+      background: white;
+      border-radius: 999px;
+      padding: 9px 14px;
+      cursor: pointer;
+    }
+
+    .language .active {
+      background: #17202a;
+      color: white;
+    }
+
+    .hero h2 {
+      margin-bottom: 5px;
+    }
+
+    .hero p {
+      margin-top: 0;
+      color: #667085;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .card {
+      min-height: 115px;
+      text-align: left;
+      padding: 16px;
+      border: 1px solid #e1e5eb;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 4px 14px #0000000a;
+      cursor: pointer;
+    }
+
+    .card span {
+      display: block;
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .card b,
+    .card small {
+      display: block;
+    }
+
+    .card small {
+      margin-top: 5px;
+      color: #667085;
+      line-height: 1.35;
+    }
+
+    .chat-box {
+      background: white;
+      border: 1px solid #e1e5eb;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .chat-header {
+      padding: 16px;
+      border-bottom: 1px solid #edf0f4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h3 {
+      margin: 0;
+    }
+
+    .new-chat {
+      border: 0;
+      background: #f1f3f6;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .messages {
+      min-height: 140px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .welcome-message {
+      color: #667085;
+      text-align: center;
+      padding: 20px 8px;
+      line-height: 1.5;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 13px;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 88%;
+      padding: 11px 13px;
+      border-radius: 15px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .user .bubble {
+      background: #d71920;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .assistant-msg .bubble {
+      background: #f1f3f6;
+      color: #17202a;
+      border-bottom-left-radius: 4px;
+    }
+
+    .thinking {
+      color: #667085;
+      font-style: italic;
+    }
+
+    .composer {
+      padding: 12px;
+      border-top: 1px solid #edf0f4;
+      background: white;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 72px;
+      max-height: 160px;
+      border: 1px solid #ccd3dd;
+      border-radius: 14px;
+      padding: 12px;
+      font: inherit;
+      resize: vertical;
+    }
+
+    .send-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .upload-btn {
+      border: 1px solid #d8dee8;
+      background: white;
+      border-radius: 13px;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    #send {
+      flex: 1;
+      border: 0;
+      border-radius: 13px;
+      padding: 13px;
+      background: #d71920;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #send:disabled {
+      opacity: 0.6;
+    }
+
+    footer {
+      text-align: center;
+      color: #7a8492;
+      font-size: 12px;
+      margin: 24px 5px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 520px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .app {
+        padding: 14px;
+      }
+    }
+  </style>
 </head>
-<body><div class="wrap">
-<header><div class="brand">SwissHilfe AI</div><div class="sub">Ndihmë e thjeshtë për jetën në Zvicër</div></header>
-<section class="card"><div class="icon">📄</div><h2>Letra & Formularë</h2><div class="muted">Ndihmë për email dhe dokumente</div></section>
-<section class="card"><div class="icon">🇦🇱 🇩🇪</div><h2>Shqip – Gjermanisht</h2><div class="muted">Shpjegim dhe përkthim i thjeshtë</div></section>
-<section class="card ask"><h2>Pyet SwissHilfe</h2><textarea id="q" placeholder="Shkruaj pyetjen tënde..."></textarea><button id="go">Vazhdo</button><div id="a" class="answer"></div></section>
-<footer>Versioni i parë • Informacion orientues, jo këshillë juridike ose mjekësore profesionale.</footer>
-</div>
-<script>
-const q=document.getElementById('q'),a=document.getElementById('a'),go=document.getElementById('go');
-go.onclick=async()=>{const text=q.value.trim();if(!text)return;go.disabled=true;go.textContent='Duke menduar…';a.className='answer show';a.textContent='Po përgatis përgjigjen…';try{const r=await fetch('/api/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:text})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Gabim');a.textContent=d.answer||'Nuk mora përgjigje.'}catch(e){a.textContent='Pjesa AI duhet të lidhet me shërbimin e serverit. Faqja bazë po funksionon.'}finally{go.disabled=false;go.textContent='Vazhdo'}};
-</script></body></html>
+
+<body>
+
+  <main class="app">
+
+    <header>
+      <div class="logo">CH</div>
+
+      <div>
+        <h1>SwissHilfe AI</h1>
+        <p>Ndihmë në Zvicër, e shpjeguar thjesht.</p>
+      </div>
+    </header>
+
+    <section class="language">
+      <button class="active">🇦🇱 Shqip</button>
+      <button>🇩🇪 Deutsch</button>
+    </section>
+
+    <section class="hero">
+      <h2>Si mund të të ndihmoj?</h2>
+      <p>Pyet lirshëm ose zgjidh një nga temat më poshtë.</p>
+    </section>
+
+    <section class="grid">
+
+      <button
+        class="card"
+        data-question="Kam problem me punën ose RAV. A mund të më ndihmosh?"
+      >
+        <span>💼</span>
+        <b>Punë & RAV</b>
+        <small>Kontrata, Kündigung, RAV dhe puna</small>
+      </button>
+
+      <button
+        class="card"
+        data-question="Kam një pyetje për mjekun ose shëndetësinë në Zvicër."
+      >
+        <span>🩺</span>
+        <b>Mjek & Shëndetësi</b>
+        <small>Termine, Überweisung dhe Krankenkasse</small>
+      </button>
+
+      <button
+        class="card"
+        data-question="Kam një pyetje për Steuer ose financat në Zvicër."
+      >
+        <span>💰</span>
+        <b>Steuer & Financa</b>
+        <small>Taksa dhe çështje financiare</small>
+      </button>
+
+      <button
+        class="card"
+        data-question="Kam një problem ose pyetje për sigurimin në Zvicër."
+      >
+        <span>🛡️</span>
+        <b>Sigurime</b>
+        <small>Krankenkasse dhe sigurime të tjera</small>
+      </button>
+
+      <button
+        class="card"
+        data-question="Kam një letër ose formular dhe dua ndihmë ta kuptoj ose plotësoj."
+      >
+        <span>📄</span>
+        <b>Letra & Formularë</b>
+        <small>Shpjegim dhe ndihmë me dokumente</small>
+      </button>
+
+      <button
+        class="card"
+        data-question="Kam nevojë për ndihmë me përkthim Shqip-Gjermanisht."
+      >
+        <span>🇦🇱 🇩🇪</span>
+        <b>Shqip – Gjermanisht</b>
+        <small>Përkthim dhe shpjegim i thjeshtë</small>
+      </button>
+
+    </section>
+
+    <section class="chat-box">
+
+      <div class="chat-header">
+        <h3>💬 Pyet SwissHilfe</h3>
+
+        <button
+          class="new-chat"
+          id="newChat"
+          type="button"
+        >
+          Bisedë e re
+        </button>
+      </div>
+
+      <div
+        id="messages"
+        class="messages"
+      >
+        <div
+          class="welcome-message"
+          id="welcome"
+        >
+          Përshëndetje 👋
+          <br>
+          Më shkruaj çfarë problemi ke dhe do të përpiqem
+          të të ndihmoj hap pas hapi.
+        </div>
+      </div>
+
+      <div class="composer">
+
+        <textarea
+          id="question"
+          placeholder="Shkruaj pyetjen këtu..."
+        ></textarea>
+
+        <div class="send-row">
+
+          <button
+            class="upload-btn"
+            type="button"
+            title="Ngarko dokument"
+            id="uploadButton"
+          >
+            📎
+          </button>
+
+          <button
+            id="send"
+            type="button"
+          >
+            Dërgo
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer>
+      SwissHilfe AI ofron informacion orientues.
+      Nuk zëvendëson mjekun, avokatin, këshilltarin tatimor
+      ose autoritetet zyrtare.
+    </footer>
+
+  </main>
+
+  <script>
+    const messagesEl = document.getElementById("messages");
+    const input = document.getElementById("question");
+    const sendBtn = document.getElementById("send");
+    const newChatBtn = document.getElementById("newChat");
+    const uploadBtn = document.getElementById("uploadButton");
+
+    let conversation = [];
+
+    function addMessage(text, type) {
+      const welcome = document.getElementById("welcome");
+
+      if (welcome) {
+        welcome.remove();
+      }
+
+      const row = document.createElement("div");
+
+      row.className =
+        "message " +
+        (type === "user" ? "user" : "assistant-msg");
+
+      const bubble = document.createElement("div");
+
+      bubble.className = "bubble";
+      bubble.textContent = text;
+
+      row.appendChild(bubble);
+      messagesEl.appendChild(row);
+
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      return row;
+    }
+
+    async function sendQuestion() {
+      const question = input.value.trim();
+
+      if (!question) {
+        return;
+      }
+
+      addMessage(question, "user");
+
+      conversation.push({
+        role: "user",
+        content: question
+      });
+
+      input.value = "";
+      input.focus();
+
+      sendBtn.disabled = true;
+
+      const loading = addMessage(
+        "SwissHilfe po mendon...",
+        "assistant"
+      );
+
+      loading
+        .querySelector(".bubble")
+        .classList.add("thinking");
+
+      try {
+        const recentConversation = conversation
+          .slice(-6)
+          .map(function(message) {
+            return (
+              (message.role === "user"
+                ? "Përdoruesi: "
+                : "SwissHilfe: ") +
+              message.content
+            );
+          })
+          .join("\n");
+
+        const response = await fetch("/api/ask", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            question:
+              "Kjo është biseda jonë deri tani:\n\n" +
+              recentConversation +
+              "\n\nPërgjigju pyetjes së fundit duke mbajtur kontekstin."
+          })
+        });
+
+        const data = await response.json();
+
+        loading.remove();
+
+        const answer =
+          data.answer ||
+          "Nuk munda të krijoj përgjigje. Provo përsëri.";
+
+        addMessage(answer, "assistant");
+
+        conversation.push({
+          role: "assistant",
+          content: answer
+        });
+
+      } catch (error) {
+        loading.remove();
+
+        addMessage(
+          "Pati një problem me lidhjen. Provo përsëri pas pak.",
+          "assistant"
+        );
+      }
+
+      sendBtn.disabled = false;
+    }
+
+    sendBtn.addEventListener(
+      "click",
+      sendQuestion
+    );
+
+    input.addEventListener(
+      "keydown",
+      function(event) {
+        if (
+          event.key === "Enter" &&
+          !event.shiftKey
+        ) {
+          event.preventDefault();
+          sendQuestion();
+        }
+      }
+    );
+
+    newChatBtn.addEventListener(
+      "click",
+      function() {
+        conversation = [];
+
+        messagesEl.innerHTML = `
+          <div
+            class="welcome-message"
+            id="welcome"
+          >
+            Përshëndetje 👋
+            <br>
+            Fillojmë një bisedë të re.
+            Si mund të të ndihmoj?
+          </div>
+        `;
+
+        input.value = "";
+        input.focus();
+      }
+    );
+
+    uploadBtn.addEventListener(
+      "click",
+      function() {
+        alert(
+          "Ngarkimi i dokumenteve do të shtohet në hapin tjetër."
+        );
+      }
+    );
+
+    document
+      .querySelectorAll(".card")
+      .forEach(function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+            input.value =
+              this.getAttribute("data-question") || "";
+
+            input.focus();
+
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth"
+            });
+          }
+        );
+
+      });
+  </script>
+
+</body>
+</html>

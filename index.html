@@ -474,17 +474,7 @@
         .classList.add("thinking");
 
       try {
-        const recentConversation = conversation
-          .slice(-6)
-          .map(function(message) {
-            return (
-              (message.role === "user"
-                ? "Përdoruesi: "
-                : "SwissHilfe: ") +
-              message.content
-            );
-          })
-          .join("\n");
+        
 
         const response = await fetch("/api/ask", {
           method: "POST",
@@ -494,10 +484,7 @@
           },
 
           body: JSON.stringify({
-            question:
-              "Kjo është biseda jonë deri tani:\n\n" +
-              recentConversation +
-              "\n\nPërgjigju pyetjes së fundit duke mbajtur kontekstin."
+            question: question
           })
         });
 
